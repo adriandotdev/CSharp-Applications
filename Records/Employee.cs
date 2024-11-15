@@ -5,6 +5,12 @@ public record Employee (string Name, string Role, string Department, decimal Sal
     public decimal ComputeTaxDeduction() => 0;
     public decimal ComputeAnnualSalary() => Salary * 12;
 
-    public string GetDetails() => $"\nName:{Name}\nRole: {Role}\nDepartment: {Department}\nSalary: {Salary}";
+    public string GetDetails() => $@"
+Name: {Name}
+Role: {Role}
+Department: {Department}
+Salary: {Salary}
+Annual Salary: {this.ComputeAnnualSalary()}
+";
 }
 
