@@ -12,8 +12,11 @@ public class EmployeeService {
 
     public async Task AddEmployee(Employee employee) {
 
-       Console.WriteLine("AddEmployee method");
-
        await repository.AddEmployee(employee);
+    }
+
+    public async Task Login(string username, string password) {
+
+        await this.repository.Login(username, password);
     }
 }
