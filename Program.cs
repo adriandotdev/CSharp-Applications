@@ -13,33 +13,68 @@ public class Program {
 
         if (loginResult.Equals("OK")) {
 
+            int choice = 0;
+
             ShowAppMenu();
-            bool isValidChoice = int.TryParse(Console.ReadLine(), out int choice);
+            bool isValidChoice = int.TryParse(Console.ReadLine(), out choice);
 
 
-            switch(choice) {
-                case 1:
-                    Console.Write("\nEnter employee name: ");
-                    string? employeeName = Console.ReadLine();
+            while(isValidChoice && choice >= 1 && choice <= 3) {
+                
+                switch(choice) {
+                    case 1:
+                        Console.Write("\nEnter employee name: ");
+                        string? employeeName = Console.ReadLine();
 
-                    Console.Write("Enter employee role: ");
-                    string? role = Console.ReadLine();
+                        Console.Write("Enter employee role: ");
+                        string? role = Console.ReadLine();
 
-                    Console.Write("Enter employee department: ");
-                    string? department = Console.ReadLine();
+                        Console.Write("Enter employee department: ");
+                        string? department = Console.ReadLine();
 
-                    Console.Write("Enter employee salary: ");
-                    bool isValidSalary = decimal.TryParse(Console.ReadLine(), out decimal salary);
+                        Console.Write("Enter employee salary: ");
+                        bool isValidSalary = decimal.TryParse(Console.ReadLine(), out decimal salary);
 
-                    if (isValidSalary) {
-                        await employeeService.AddEmployee(new Employee(employeeName, role, department, salary));
-                        Console.WriteLine($"Employee {employeeName} added successfully.");
-                    }
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice. Please try again.");
-                    break;
-            }
+                        if (isValidSalary) {
+                            await employeeService.AddEmployee(new Employee(employeeName, role, department, salary));
+                            Console.WriteLine($"Employee {employeeName} added successfully.\n");
+                        }
+                        break;
+                    case 2:
+
+                        Console.WriteLine("\nList of Employees");
+                        int page = 1;
+                        int limit = 5 ;
+                        int offset = (page - 1) * limit;
+
+                        var totalEmployees = await employeeService.GetEmployees(limit, offset);
+        
+                        while (totalEmployees > (limit * page)) {
+                            Console.Write("Next Page? ");
+                            string? nextPageInput = Console.ReadLine();
+
+                            if (!string.IsNullOrEmpty(nextPageInput) && nextPageInput.ToLower().Equals("yes")) {
+                                page++;
+                                offset = (page - 1) * limit;
+                                totalEmployees = await employeeService.GetEmployees(limit, offset);
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        break;
+                    case 3:
+                        Console.WriteLine("Exit");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+                }
+
+                ShowAppMenu();
+                isValidChoice = int.TryParse(Console.ReadLine(), out choice);
+            } 
+
         }
     }
 
@@ -77,10 +112,8 @@ public class Program {
         Console.WriteLine("Employee Management Console App");
         Console.WriteLine("==================================");
         Console.WriteLine("1. Add Employee");
-        Console.WriteLine("2. Update Employee");
-        Console.WriteLine("3. Delete Employee");
-        Console.WriteLine("4. List Employees");
-        Console.WriteLine("5. Exit");
+        Console.WriteLine("2. Show Employees");
+        Console.WriteLine("3. Exit");
         Console.Write("Enter your choice: ");
     }
 }
