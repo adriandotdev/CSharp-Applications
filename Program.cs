@@ -23,6 +23,10 @@ public class Program {
                 
                 switch(choice) {
                     case 1:
+
+                        Console.WriteLine("\nNew Employee");
+                        Console.WriteLine("==================================");
+
                         Console.Write("\nEnter employee name: ");
                         string? employeeName = Console.ReadLine();
 
@@ -36,13 +40,14 @@ public class Program {
                         bool isValidSalary = decimal.TryParse(Console.ReadLine(), out decimal salary);
 
                         if (isValidSalary) {
-                            await employeeService.AddEmployee(new Employee(employeeName, role, department, salary));
+                            await employeeService.AddEmployee(new Employee(0, employeeName, role, department, salary));
                             Console.WriteLine($"Employee {employeeName} added successfully.\n");
                         }
                         break;
                     case 2:
-
                         Console.WriteLine("\nList of Employees");
+                        Console.WriteLine("==================================");
+
                         int page = 1;
                         int limit = 5 ;
                         int offset = (page - 1) * limit;
@@ -50,7 +55,7 @@ public class Program {
                         var totalEmployees = await employeeService.GetEmployees(limit, offset);
         
                         while (totalEmployees > (limit * page)) {
-                            Console.Write("Next Page? ");
+                            Console.Write("Show More? (Type \"yes\" to confirm): ");
                             string? nextPageInput = Console.ReadLine();
 
                             if (!string.IsNullOrEmpty(nextPageInput) && nextPageInput.ToLower().Equals("yes")) {
@@ -93,6 +98,16 @@ public class Program {
 
                 Console.Write("Enter your password: ");
                 string? password = Console.ReadLine();
+
+                if (username is null) {
+                    Console.WriteLine("Error: Username cannot be empty.");
+                    continue;
+                }
+
+                if (password is null) {
+                    Console.WriteLine("Error: Password cannot be empty.");
+                    continue;
+                }
 
                 await employeeService.Login(username, password);
 

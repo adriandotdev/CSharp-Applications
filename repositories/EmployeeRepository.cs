@@ -7,10 +7,11 @@ namespace EmployeeManagementConsoleApp;
 
 public class EmployeeRepository {
 
-    
+    private static readonly string CONNECTION_STRING = "Server=localhost;Database=employee_management_system;Port=3306;User ID=root;Password=4332wurx;Pooling=true;Min Pool Size=0;Max Pool Size=100;";
+
     public async Task AddEmployee(Employee employee) {
 
-        using var connection = new MySqlConnection("Server=localhost;Database=employee_management_system;Port=3306;User ID=root;Password=4332wurx;Pooling=true;Min Pool Size=0;Max Pool Size=100;");
+        using var connection = new MySqlConnection(CONNECTION_STRING);
 
         try {
             await connection.OpenAsync();
@@ -36,7 +37,7 @@ public class EmployeeRepository {
 
     public async Task Login(string username, string password) {
 
-        using var connection = new MySqlConnection("Server=localhost;Database=employee_management_system;Port=3306;User ID=root;Password=4332wurx;Pooling=true;Min Pool Size=0;Max Pool Size=100;");
+        using var connection = new MySqlConnection(CONNECTION_STRING);
 
         await connection.OpenAsync();
 
@@ -63,7 +64,7 @@ public class EmployeeRepository {
 
     public async Task<int> TotalEmployees() {
 
-        using var connection = new MySqlConnection("Server=localhost;Database=employee_management_system;Port=3306;User ID=root;Password=4332wurx;Pooling=true;Min Pool Size=0;Max Pool Size=100;");
+        using var connection = new MySqlConnection(CONNECTION_STRING);
 
         await connection.OpenAsync();
 
@@ -88,7 +89,7 @@ public class EmployeeRepository {
 
         await connection.OpenAsync();
 
-        string QUERY = $"SELECT * FROM employees LIMIT {limit} OFFSET {offset}";
+        string QUERY = $"SELECT * FROM employees LIMIT {limit}  OFFSET {offset}";
 
         using var command = new MySqlCommand(QUERY, connection);
 
@@ -96,13 +97,13 @@ public class EmployeeRepository {
 
         while (reader.Read()) {
 
-            int id = reader.GetInt32("id");
+            int id = reader.GetInt16("id");
             string name = reader.GetString("name");
             string role = reader.GetString("role");
             string department = reader.GetString("department");
             decimal salary = reader.GetDecimal("salary");
 
-            Console.WriteLine(new Employee(name, role, department, salary).GetDetails());
+            Console.WriteLine(new Employee(id, name, role, department, salary).GetDetails());
         }
         return [];
     }
